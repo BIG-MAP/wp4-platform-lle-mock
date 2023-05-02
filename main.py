@@ -88,4 +88,8 @@ def do_stop():
 
 @app.get("/results")
 def get_results():
-    return Response(status=extractor.status, settings=extractor.settings, results=extractor.results.to_numpy().tolist())
+    return Response(
+        status=extractor.status,
+        settings=extractor.settings,
+        results=extractor.results.to_numpy().tolist(),
+    )

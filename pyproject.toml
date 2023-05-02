@@ -4,7 +4,6 @@ version = "0.1.0"
 description = ""
 authors = ["Ihar Suvorau <ihar.suvorau@gmail.com>"]
 readme = "README.md"
-packages = [{include = "lle_mock"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -13,6 +12,8 @@ fastapi = "^0.95.1"
 pydantic = "^1.10.7"
 uvicorn = "^0.21.1"
 
+[tool.ruff]
+line-length = 120
 
 [build-system]
 requires = ["poetry-core"]
