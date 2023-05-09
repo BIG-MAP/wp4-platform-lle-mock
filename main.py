@@ -6,6 +6,8 @@ import pandas as pd
 from fastapi import FastAPI
 from pydantic import BaseModel
 
+from settings import Settings
+
 app = FastAPI()
 
 
@@ -14,10 +16,6 @@ class Status(Enum):
     running = "running"
     finished = "finished"
     stopped = "stopped"
-
-
-class Settings(BaseModel):
-    sleep_delay: int = 15
 
 
 class LiquidExtractor:
@@ -33,7 +31,7 @@ class LiquidExtractor:
         self.settings = settings
         self.status = Status.running
         self.results = pd.DataFrame()
-        self._task = self._loop.create_task(self.finish(settings.sleep_delay))
+        self._task = self._loop.create_task(self.finish(30))
 
     async def finish(self, delay):
         await asyncio.sleep(delay)
@@ -57,20 +55,14 @@ class Response(BaseModel):
 extractor = LiquidExtractor()
 
 
-@app.get("/")
-def get_root():
-    return {"Hello": "World"}
-
-
-@app.get("/start")
-def do_start():
-    settings = Settings(sleep_delay=15)
+@app.post("/startSettling")
+def start_settling(settings: Settings):
     extractor.start(settings)
     return Response(status=extractor.status, settings=extractor.settings)
 
 
-@app.post("/start")
-def post_start(settings: Settings):
+@app.post("/startDraining/{liquid_type}")
+def start_draining(liquid_type: str, settings: Settings):
     extractor.start(settings)
     return Response(status=extractor.status, settings=extractor.settings)
 
